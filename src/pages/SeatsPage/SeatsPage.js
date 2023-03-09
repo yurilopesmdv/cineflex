@@ -1,51 +1,115 @@
+import axios from "axios"
+import { useEffect, useState } from "react"
+import { useParams } from "react-router"
+import { Link } from "react-router-dom"
 import styled from "styled-components"
+import COLORS from "../../style/color"
 
 export default function SeatsPage() {
-
+    const { idSessao } = useParams()
+    const [sessionInfos, setSessionInfos] = useState([])
+    const [seats, setSeats] = useState([])
+    const [selected, setSelected] = useState([])
+    const [name, setName] = useState("")
+    const [cpf, setCpf] = useState("")
+    useEffect(() => {
+        const url = `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSessao}/seats`
+        const promise = axios.get(url)
+        promise.then((res) => {
+            setSessionInfos(res.data)
+            setSeats(res.data.seats)
+        })
+        promise.catch((err) => console.log(err.response.data))
+    }, [])
+    function selectSeat(seatID) {
+        if (selected.includes(seatID)) {
+            const newSelected = selected.filter((seat) => seat !== seatID)
+            setSelected(newSelected)
+            return
+        }
+        setSelected([...selected, seatID])
+    }
+    function nameChange(event) {
+        setName(event.target.value)
+        console.log(event.target.value)
+    }
+    function cpfChange(event) {
+        setCpf(event.target.value)
+        console.log(event.target.value)
+    }
+    function reserveSeats(name, cpf, selected) {
+        const request = {
+            ids: selected,
+            name: name,
+            cpf: cpf
+        }
+        console.log(request)
+        const urlPost = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many"
+        const promise = axios.post(urlPost, request)
+        promise.then(res => console.log(res.data))
+        promise.catch(err => console.log(err.response.data))
+    }
+    if (seats.length === 0 || sessionInfos.length === 0) {
+        return (
+            <PageContainer>
+                <p>Carregando</p>
+            </PageContainer>
+        )
+    }
     return (
         <PageContainer>
             Selecione o(s) assento(s)
 
             <SeatsContainer>
-                <SeatItem>01</SeatItem>
-                <SeatItem>02</SeatItem>
-                <SeatItem>03</SeatItem>
-                <SeatItem>04</SeatItem>
-                <SeatItem>05</SeatItem>
+                {seats.map((seat) => {
+                    return (
+                        <SeatItem onClick={(seat.isAvailable) ? () => selectSeat(seat.id) : () => alert("Esse assento não está disponível")}
+                            colors={COLORS}
+                            key={seat.id}
+                            isAvailable={seat.isAvailable}
+                            selected={selected}
+                            seatID={seat.id}>
+                            {seat.name}
+                        </SeatItem>
+                    )
+                })}
+
             </SeatsContainer>
 
             <CaptionContainer>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle color={COLORS[1].color} border={COLORS[1].border} />
                     Selecionado
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle color={COLORS[0].color} border={COLORS[0].border} />
                     Disponível
                 </CaptionItem>
                 <CaptionItem>
-                    <CaptionCircle />
+                    <CaptionCircle color={COLORS[2].color} border={COLORS[2].border} />
                     Indisponível
                 </CaptionItem>
             </CaptionContainer>
 
             <FormContainer>
                 Nome do Comprador:
-                <input placeholder="Digite seu nome..." />
+                <input placeholder="Digite seu nome..." type="text" value={name} onChange={nameChange} />
 
                 CPF do Comprador:
-                <input placeholder="Digite seu CPF..." />
+                <input placeholder="Digite seu CPF..." type="text" value={cpf} onChange={cpfChange} />
+                <Link to={"/sucesso"}>
+                    <button onClick={() => reserveSeats(name, cpf, selected)}>Reservar Assento(s)</button>
+                </Link>
 
-                <button>Reservar Assento(s)</button>
             </FormContainer>
 
             <FooterContainer>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={sessionInfos.movie.posterURL} alt="poster" />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
-                    <p>Sexta - 14h00</p>
+                    <p>{sessionInfos.movie.title}</p>
+                    <p>{sessionInfos.day.weekday} - {sessionInfos.name}</p>
                 </div>
             </FooterContainer>
 
@@ -96,8 +160,8 @@ const CaptionContainer = styled.div`
     margin: 20px;
 `
 const CaptionCircle = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    border: 1px solid ${props => props.border};         // Essa cor deve mudar
+    background-color: ${props => props.color};    // Essa cor deve mudar
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -114,7 +178,17 @@ const CaptionItem = styled.div`
 `
 const SeatItem = styled.div`
     border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    background-color: ${(props) => {
+        if (!props.isAvailable) {
+            return props.colors[2].color
+        }
+        if (props.isAvailable && !props.selected.includes(props.seatID)) {
+            return props.colors[0].color
+        }
+        if (props.isAvailable && props.selected.includes(props.seatID)) {
+            return props.colors[1].color
+        }
+    }};    // Essa cor deve mudar
     height: 25px;
     width: 25px;
     border-radius: 25px;

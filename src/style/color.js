@@ -1,6 +1,6 @@
-export const DISPONIVEL = "##7B8B99"
-export const BORDADISP = "#C3CFD9"
-export const SELECIONADO = "##0E7D71"
-export const BORDASELEC = "#1AAE9E"
-export const INDISPONIVEL = "##F7C52B"
-export const BORDAINDISP = "#FBE192"
+const COLORS = [
+    { name:"disponivel", color:"#C3CFD9", border:"#7B8B99"},
+    { name:"selecionado", color:"#0E7D71", border:"#1AAE9E"},
+    { name:"indisponivel", color:"#F7C52B", border:"#FBE192"}
+]
+export default COLORS
