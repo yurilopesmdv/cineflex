@@ -23,16 +23,18 @@ export default function SeatsPage(props) {
         })
         promise.catch((err) => console.log(err.response.data))
     }, [])
-    function selectSeat(seatID, seatIDC) {
-        if (selected.includes(seatID)) {
-            const newSelected = selected.filter((seat) => seat !== seatID)
+    function selectSeat(seatName, seatID) {
+        if (selected.includes(seatName)) {
+            const newSelected = selected.filter((seat) => seat !== seatName)
             setSelected(newSelected)
-            const newSelectedID = selectedID.filter((seat) => seat !== seatIDC)
+            const newSelectedID = selectedID.filter((seat) => seat !== seatID)
             setSelectedID(newSelectedID)
+            
             return
         }
-        setSelected([...selected, seatID])
-        setSelectedID([...setSelectedID, seatIDC])
+        setSelected([...selected, seatName])
+        setSelectedID([...selectedID, seatID])
+        console.log(selectedID)
     }
     function nameChange(event) {
         setName(event.target.value)
