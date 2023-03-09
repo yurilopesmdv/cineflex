@@ -73,7 +73,7 @@ export default function SeatsPage(props) {
             <SeatsContainer>
                 {seats.map((seat) => {
                     return (
-                        <SeatItem onClick={(seat.isAvailable) ? () => selectSeat(seat.name) : () => alert("Esse assento não está disponível")}
+                        <SeatItem data-test="seat" onClick={(seat.isAvailable) ? () => selectSeat(seat.name) : () => alert("Esse assento não está disponível")}
                             colors={COLORS}
                             key={seat.id}
                             isAvailable={seat.isAvailable}
@@ -103,17 +103,17 @@ export default function SeatsPage(props) {
 
             <FormContainer>
                 Nome do Comprador:
-                <input placeholder="Digite seu nome..." type="text" value={name} onChange={nameChange} />
+                <input data-test="client-name" placeholder="Digite seu nome..." type="text" value={name} onChange={nameChange} />
 
                 CPF do Comprador:
-                <input placeholder="Digite seu CPF..." type="text" value={cpf} onChange={cpfChange} />
+                <input data-test="client-cpf" placeholder="Digite seu CPF..." type="text" value={cpf} onChange={cpfChange} />
                 <Link to={"/sucesso"}>
-                    <button onClick={() => reserveSeats(name, cpf, selected)}>Reservar Assento(s)</button>
+                    <button data-test="book-seat-btn" onClick={() => reserveSeats(name, cpf, selected)}>Reservar Assento(s)</button>
                 </Link>
 
             </FormContainer>
 
-            <FooterContainer>
+            <FooterContainer data-test="footer">
                 <div>
                     <img src={sessionInfos.movie.posterURL} alt="poster" />
                 </div>
