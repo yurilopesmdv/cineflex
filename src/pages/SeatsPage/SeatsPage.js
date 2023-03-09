@@ -11,6 +11,7 @@ export default function SeatsPage(props) {
     const [sessionInfos, setSessionInfos] = useState([])
     const [seats, setSeats] = useState([])
     const [selected, setSelected] = useState([])
+    const [selectedID, setSelectedID] = useState([])
     const [name, setName] = useState("")
     const [cpf, setCpf] = useState("")
     useEffect(() => {
@@ -22,26 +23,26 @@ export default function SeatsPage(props) {
         })
         promise.catch((err) => console.log(err.response.data))
     }, [])
-    function selectSeat(seatID) {
+    function selectSeat(seatID, seatIDC) {
         if (selected.includes(seatID)) {
             const newSelected = selected.filter((seat) => seat !== seatID)
             setSelected(newSelected)
+            const newSelectedID = selectedID.filter((seat) => seat !== seatIDC)
+            setSelectedID(newSelectedID)
             return
         }
         setSelected([...selected, seatID])
-        console.log(selected)
+        setSelectedID([...setSelectedID, seatIDC])
     }
     function nameChange(event) {
         setName(event.target.value)
-        console.log(event.target.value)
     }
     function cpfChange(event) {
         setCpf(event.target.value)
-        console.log(event.target.value)
     }
     function reserveSeats(name, cpf, selected) {
         const request = {
-            ids: selected,
+            ids: selectedID,
             name: name,
             cpf: cpf
         }
@@ -73,7 +74,7 @@ export default function SeatsPage(props) {
             <SeatsContainer>
                 {seats.map((seat) => {
                     return (
-                        <SeatItem data-test="seat" onClick={(seat.isAvailable) ? () => selectSeat(seat.name) : () => alert("Esse assento não está disponível")}
+                        <SeatItem data-test="seat" onClick={(seat.isAvailable) ? () => selectSeat(seat.name, seat.id) : () => alert("Esse assento não está disponível")}
                             colors={COLORS}
                             key={seat.id}
                             isAvailable={seat.isAvailable}
