@@ -1,54 +1,56 @@
 import axios from "axios"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router"
+import { Link } from "react-router-dom"
 import styled from "styled-components"
 
 export default function SessionsPage() {
-    const {idFilme} = useParams()
-    useEffect( () => {
+    const { idFilme } = useParams()
+    const [sessions, setSessions] = useState([])
+    const [sessionsDays, setSessionsDays] = useState([])
+    useEffect(() => {
         const url = `https://mock-api.driven.com.br/api/v8/cineflex/movies/${idFilme}/showtimes`
         const promise = axios.get(url)
-        promise.then( (res) => console.log(res))
-        promise.catch( err => console.log(err.response.data))
+        promise.then((res) => {
+            setSessions(res.data)
+            setSessionsDays(res.data.days)
+        })
+        promise.catch(err => console.log(err.response.data))
     }, [])
     return (
         <PageContainer>
             Selecione o horário
             <div>
-                <SessionContainer>
-                    Sexta - 03/03/2023
-                    <ButtonsContainer>
-                        <button>14:00</button>
-                        <button>15:00</button>
-                    </ButtonsContainer>
-                </SessionContainer>
-
-                <SessionContainer>
-                    Sexta - 03/03/2023
-                    <ButtonsContainer>
-                        <button>14:00</button>
-                        <button>15:00</button>
-                    </ButtonsContainer>
-                </SessionContainer>
-
-                <SessionContainer>
-                    Sexta - 03/03/2023
-                    <ButtonsContainer>
-                        <button>14:00</button>
-                        <button>15:00</button>
-                    </ButtonsContainer>
-                </SessionContainer>
+                {sessionsDays.map((day) => {
+                    const schedules = day.showtimes
+                    return (
+                        <SessionContainer key={day.id}>
+                           {day.weekday} - {day.date}
+                            <ButtonsContainer>
+                                {schedules.map( (buttons) => {
+                                    return (
+                                        <Link key={buttons.id} to={`/assentos/${buttons.id}`}>
+                                            <button >{buttons.name}</button>
+                                        </Link>
+                                        
+                                    )
+                                })}
+                            </ButtonsContainer>
+                        </SessionContainer>
+        
+                    )
+                })}
             </div>
+
 
             <FooterContainer>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={sessions.posterURL} alt="poster" />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
+                    <p>{sessions.title}</p>
                 </div>
             </FooterContainer>
-
         </PageContainer>
     )
 }
