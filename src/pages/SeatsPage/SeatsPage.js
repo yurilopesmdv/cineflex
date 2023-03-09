@@ -5,7 +5,8 @@ import { Link } from "react-router-dom"
 import styled from "styled-components"
 import COLORS from "../../style/color"
 
-export default function SeatsPage() {
+export default function SeatsPage(props) {
+    const { setInformation } = props
     const { idSessao } = useParams()
     const [sessionInfos, setSessionInfos] = useState([])
     const [seats, setSeats] = useState([])
@@ -28,6 +29,7 @@ export default function SeatsPage() {
             return
         }
         setSelected([...selected, seatID])
+        console.log(selected)
     }
     function nameChange(event) {
         setName(event.target.value)
@@ -43,7 +45,15 @@ export default function SeatsPage() {
             name: name,
             cpf: cpf
         }
-        console.log(request)
+        setInformation({
+            movie:sessionInfos.movie.title,
+            date: sessionInfos.day.date,
+            schedule: sessionInfos.name,
+            seats: selected,
+            name: name,
+            cpf: cpf
+        })
+        
         const urlPost = "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many"
         const promise = axios.post(urlPost, request)
         promise.then(res => console.log(res.data))
@@ -63,12 +73,12 @@ export default function SeatsPage() {
             <SeatsContainer>
                 {seats.map((seat) => {
                     return (
-                        <SeatItem onClick={(seat.isAvailable) ? () => selectSeat(seat.id) : () => alert("Esse assento não está disponível")}
+                        <SeatItem onClick={(seat.isAvailable) ? () => selectSeat(seat.name) : () => alert("Esse assento não está disponível")}
                             colors={COLORS}
                             key={seat.id}
                             isAvailable={seat.isAvailable}
                             selected={selected}
-                            seatID={seat.id}>
+                            seatID={seat.name}>
                             {seat.name}
                         </SeatItem>
                     )

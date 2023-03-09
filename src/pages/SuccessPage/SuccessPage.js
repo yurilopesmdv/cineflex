@@ -1,31 +1,40 @@
+import { Link } from "react-router-dom"
 import styled from "styled-components"
 
-export default function SuccessPage() {
-
+export default function SuccessPage(props) {
+    const { information, setInformation } = props
+    const { movie, date, schedule, seats, name, cpf } = information
+    function voltarHome() {
+        setInformation({})
+    }
     return (
         <PageContainer>
+
             <h1>Pedido feito <br /> com sucesso!</h1>
 
             <TextContainer>
                 <strong><p>Filme e sessão</p></strong>
-                <p>Tudo em todo lugar ao mesmo tempo</p>
-                <p>03/03/2023 - 14:00</p>
+                <p>{movie}</p>
+                <p>{date} - {schedule}</p>
             </TextContainer>
 
             <TextContainer>
                 <strong><p>Ingressos</p></strong>
-                <p>Assento 01</p>
-                <p>Assento 02</p>
-                <p>Assento 03</p>
+                {seats.map((seat) => {
+                    return (
+                        <p key={seat}>Assento {seat}</p>
+                    )
+                })}
             </TextContainer>
 
             <TextContainer>
                 <strong><p>Comprador</p></strong>
-                <p>Nome: Letícia Chijo</p>
-                <p>CPF: 123.456.789-10</p>
+                <p>Nome: {name}</p>
+                <p>CPF: {cpf}</p>
             </TextContainer>
-
-            <button>Voltar para Home</button>
+            <Link to="/">
+                <button onClick={voltarHome}>Voltar para Home</button>
+            </Link>
         </PageContainer>
     )
 }
@@ -38,7 +47,7 @@ const PageContainer = styled.div`
     font-size: 24px;
     color: #293845;
     margin: 30px 20px;
-    padding-bottom: 120px;
+    padding-bottom: 80px;
     padding-top: 70px;
     a {
         text-decoration: none;
