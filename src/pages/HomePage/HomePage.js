@@ -14,17 +14,20 @@ export default function HomePage() {
     }, [])
     if (movies.length === 0) {
         return (
-            <p>Carregando</p>
+            <PageContainer>
+                <p>Carregando</p>
+            </PageContainer>
         )
     }
     return (
         <PageContainer>
+            <NavBar>CINEFLEX</NavBar>
             Selecione o filme
 
             <ListContainer>
                 {movies.map((movieObj) => {
                     return (
-                        <Link key={movieObj.id} to={`/sessoes/${movieObj.id}` }>
+                        <Link key={movieObj.id} to={`/sessoes/${movieObj.id}`}>
                             <MovieContainer data-test="movie">
                                 <img src={movieObj.posterURL} alt="poster" />
                             </MovieContainer>
@@ -39,6 +42,23 @@ export default function HomePage() {
         </PageContainer >
     )
 }
+const NavBar = styled.div`
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #C3CFD9;
+    color: #E8833A;
+    font-family: 'Roboto', sans-serif;
+    font-size: 34px;
+    position: fixed;
+    top: 0;
+    a {
+        text-decoration: none;
+        color: #E8833A;
+    }
+`
 
 const PageContainer = styled.div`
     display: flex;

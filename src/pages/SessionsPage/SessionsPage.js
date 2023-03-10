@@ -4,8 +4,10 @@ import { useParams } from "react-router"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
 
-export default function SessionsPage() {
+export default function SessionsPage(props) {
+    const { setFilmeId } = props
     const { idFilme } = useParams()
+    setFilmeId(idFilme)
     const [sessions, setSessions] = useState([])
     const [sessionsDays, setSessionsDays] = useState([])
     useEffect(() => {
@@ -19,6 +21,12 @@ export default function SessionsPage() {
     }, [])
     return (
         <PageContainer>
+            <NavBar>
+                <Link data-test="go-home-header-btn" to={"/"}>
+                    <ion-icon name="arrow-back-outline"></ion-icon>
+                </Link>
+                CINEFLEX
+            </NavBar>
             Selecione o horário
             <div>
                 {sessionsDays.map((day) => {
@@ -54,7 +62,34 @@ export default function SessionsPage() {
         </PageContainer>
     )
 }
-
+const NavBar = styled.div`
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    background-color: #C3CFD9;
+    color: #E8833A;
+    font-family: 'Roboto', sans-serif;
+    font-size: 34px;
+    position: fixed;
+    top: 0;
+    a {
+        text-decoration: none;
+        color: #000000;
+        margin: 0 77vh 0 10px;
+    }
+    @media(max-width: 900px){
+        a{
+            margin-right: 35vh
+        }
+    }
+    @media(max-width: 800px){
+        a{
+            margin: 0 13vh 0 10px;
+        }
+    }
+`
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -62,11 +97,13 @@ const PageContainer = styled.div`
     font-size: 24px;
     text-align: center;
     color: #293845;
-    margin-top: 30px;
     padding-bottom: 120px;
     padding-top: 70px;
     div {
-        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    div:last-child{
+        margin-bottom: 0;
     }
 `
 const SessionContainer = styled.div`

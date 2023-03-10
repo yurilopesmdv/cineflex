@@ -8,14 +8,15 @@ import SuccessPage from "./pages/SuccessPage/SuccessPage"
 
 export default function App() {
     const [information, setInformation] = useState({})
+    const [filmeId, setFilmeId] = useState()
     return (
         <>
-            <NavContainer>CINEFLEX</NavContainer>
+            
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<HomePage />}/>
-                    <Route path="/sessoes/:idFilme" element={<SessionsPage />}/>
-                    <Route path="/assentos/:idSessao" element={<SeatsPage setInformation={setInformation}/>}/>
+                    <Route path="/sessoes/:idFilme" element={<SessionsPage setFilmeId={setFilmeId}/>}/>
+                    <Route path="/assentos/:idSessao" element={<SeatsPage setInformation={setInformation} filmeId={filmeId}/>}/>
                     <Route path="/sucesso" element={<SuccessPage information={information} setInformation={setInformation}/>}/>
                 </Routes>
 

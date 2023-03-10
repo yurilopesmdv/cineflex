@@ -1,12 +1,12 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
 import COLORS from "../../style/color"
 
 export default function SeatsPage(props) {
-    const { setInformation } = props
+    const { setInformation, filmeId } = props
     const { idSessao } = useParams()
     const [sessionInfos, setSessionInfos] = useState([])
     const [seats, setSeats] = useState([])
@@ -62,6 +62,10 @@ export default function SeatsPage(props) {
         promise.then(res => console.log(res.data))
         promise.catch(err => console.log(err.response.data))
     }
+    function Back() {
+        const navigate = useNavigate()
+        navigate("/")
+    }
     if (seats.length === 0 || sessionInfos.length === 0) {
         return (
             <PageContainer>
@@ -71,6 +75,12 @@ export default function SeatsPage(props) {
     }
     return (
         <PageContainer>
+            <NavBar>
+                <Link data-test="go-home-header-btn" to={`/sessoes/${filmeId}`}>
+                    <ion-icon onClick={Back} name="arrow-back-outline"></ion-icon>
+                </Link>
+                CINEFLEX
+            </NavBar>
             Selecione o(s) assento(s)
 
             <SeatsContainer>
@@ -129,7 +139,34 @@ export default function SeatsPage(props) {
         </PageContainer>
     )
 }
-
+const NavBar = styled.div`
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    background-color: #C3CFD9;
+    color: #E8833A;
+    font-family: 'Roboto', sans-serif;
+    font-size: 34px;
+    position: fixed;
+    top: 0;
+    ion-icon {
+        text-decoration: none;
+        color: #000000;
+        margin: 0 77vh 0 10px;
+    }
+    @media(max-width: 900px){
+        ion-icon{
+            margin-right: 35vh
+        }
+    }
+    @media(max-width: 800px){
+        ion-icon{
+            margin: 0 13vh 0 10px;
+        }
+    }
+`
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
